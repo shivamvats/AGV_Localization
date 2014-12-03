@@ -15,15 +15,13 @@
            regardless of whether it receives more measurements. --> 
       <param name="frequency" value="30"/>  
 
-      <!-- The period, in seconds, after which we consider a sensor to have timed out. In this event, we
-           carry out a predict cycle on the EKF without correcting it. This parameter can be thought of
-           as the minimum frequency with which the filter will generate output. -->
+<!-- Rahul:Filter Frequency(minimum) used in prediction step for time(delta) -->
+ 
       <param name="sensor_timeout" value="0.1"/>  
 
-      <!-- If this is set to true, no 3D information will be used in your state estimate. Use this if you
-           are operating in a planar environment and want to ignore the effect of small variations in the
-           ground plane that might otherwise be detected by, for example, an IMU. -->
-      <param name="two_d_mode" value="false"/>
+<!-- Rahul:The parameter is set to 'true' for 2D mode i.e 2D localization -->
+
+      <param name="two_d_mode" value="true"/>
 
       <!-- REP-105 (http://www.ros.org/reps/rep-0105.html) specifies three principal coordinate frames: map, 
            odom, and base_link. base_link is the coordinate frame that is affixed to the robot. The robot's 
@@ -63,11 +61,16 @@
            The order of the values is x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az. Note that not some message
            types lack certain variables. For example, a TwistWithCovarianceStamped message has no pose information, so the first
            six values would be meaningless in that case. -->
+
+<!-- Rahul:I've set omega for yaw as true as motor encoders will give us the angular velocity -->
+
       <rosparam param="odom0_config">[false, false, false, 
                                       false, false, false, 
                                       true,  false, false, 
-                                      false, false, false,
+                                      false, false, true, 
                                       false, false, false]</rosparam>
+
+<!-- Rahul: The <odom1_config> and <pose0_config> and <twist0_config> is left as same it is as it is set <false> in earlier param -->
 
       <rosparam param="odom1_config">[false, false, false, 
                                       false, false, false, 
@@ -83,15 +86,17 @@
 
       <rosparam param="twist0_config">[false, false, false, 
                                        false, false, false, 
-                                       true,  true,  true, 
-                                       true,  true,  true,
+                                       false,  false,  true, 
+                                       false,  false,  true,
                                        false, false, false]</rosparam>
 
+<!-- Rahul:Only the yaw and yaw(velocity) is set as true -->
+
       <rosparam param="imu0_config">[false, false, false, 
-                                     true,  true,  true, 
-                                     false, false, false, 
-                                     true,  true,  true,
-                                     true,  true,  true]</rosparam>
+                                     false,  false,  true, 
+                                     false,  false,  false, 
+                                     false,  false,  true,
+                                     false,  false,  false]</rosparam>
 
       <!-- The best practice for including new sensors in robot_localization's state estimation nodes is to pass in velocity 
            measurements and let the nodoes integrate them. However, this isn't always feasible, and so the state estimation
@@ -101,14 +106,20 @@
            to true. This will carry out differential integration of the sensor data, i.e., it will repeatedly integrate the 
            difference between a given measurement and the previous measurement from that sensor. 
            NOTE: this only applies to sensors that provide absolute measurements, so Twist messages are not supported. -->
+
+<!-- Rahul:odom0_differential and imu0_differential is set as 'true' -->
+
       <param name="odom0_differential" value="true"/>
       <param name="odom1_differential" value="false"/>
-      <param name="pose0_differential" value="true"/>
-      <param name="imu0_differential" value="false"/>
+      <param name="pose0_differential" value="false"/>
+      <param name="imu0_differential" value="true"/>
 
       <!-- If we're including accelerations in our state estimate, then we'll probably want to remove any acceleration that
            is due to gravity for each IMU. If you don't want to, then set this to false. -->
-      <param name="imu0_remove_gravitational_acceleration" value="true"/>
+
+<!-- Rahul: <imu0_remove_gravitational_acceleration> is set to false as linear accelerations are not used -->
+
+      <param name="imu0_remove_gravitational_acceleration" value="false"/>
 
       <!-- Debug settings. Not for the faint of heart. Outputs a ludicrous amount of information to the file
            specified by debug_out_file. I hope you like matrices! -->
