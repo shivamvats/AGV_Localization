@@ -1189,8 +1189,8 @@ namespace RobotLocalization
         tf::transformTFToMsg(tf::Transform::getIdentity(), mapOdomTransMsg.transform);
 
         // Publisher
-        ros::Publisher positionPub = nh_.advertise<nav_msgs::Odometry>("odometry/filtered", 20);
-        tf::TransformBroadcaster worldTransformBroadcaster;
+        ros::Publisher positionPub = nh_.advertise<nav_msgs::Odometry>("odometry/filtered", 20); //This will be 
+        tf::TransformBroadcaster worldTransformBroadcaster;	                    //subscribed by navsat_transform
 
         ros::Rate loop_rate(frequency_);
 
