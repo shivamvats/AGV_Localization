@@ -38,13 +38,14 @@ namespace odometry_space {
 		
 		public:
 		
+		NUM_COMMANDS = 0;
 		OdometryFactory();
 		void updateOdometryData(const eklavya_encoder::Encoder_Data::ConstPtr&);
 		nav_msgs::Odometry getOdometryData();
 		void encoderCallback(nav_msgs::Odometry::ConstPtr& msg);
 		ofstream file;
 		file.open("data.txt");
-		file<<"position_x\tposition_y\n");
+		file<<"position_x position_y\n");
 	};
 	
 }
