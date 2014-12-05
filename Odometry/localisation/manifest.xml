@@ -1,0 +1,14 @@
+<package>
+  <description brief="localisation">
+
+     localisation
+
+  </description>
+  <author>Shivam Vats</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/localisation</url>
+
+</package>
+
+

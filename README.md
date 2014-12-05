@@ -1,6 +1,7 @@
 AGV_Localization
 ================
 
+
 					Odometry, IMU and Robot Localization Packages
 
 <0>.About <robot_localisation> package
@@ -47,8 +48,5 @@ AGV_Localization
 	3.3For robot_localization, the preferred method is to feed it velocity information and let the filter integrate the values 			using its kinematic model. If this is impractical (e.g., for measurements from other packages over which you have no 			control), then users can use the xxx_differential setting. By setting this to true for a given variable (the default 			value is false), robot_localization integrates the pose data for that sensor in the same manner as robot_pose_ekf. 			Users wishing to integrate GPS data should take care, though: setting the differential parameter to true for data 			coming from, for example, navsat_transform_node will result in the loss of the "global" nature of the measurement. In 			other words, each measurement will not be fused absolutely and therefore will still drift from the true GPS track. 			Users wishing to fuse GPS data should make sure that its differential parameter is set to false. 
 
 <4>
-
-
-
 
 
