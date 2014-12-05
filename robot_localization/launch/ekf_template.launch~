@@ -1,6 +1,4 @@
-<!-- Launch file for ukf_localization_node -->
-
-<!-- Rahul: We need to change the <frequency> and <time_out> parameters according to our sensors specification -->
+<!-- Launch file for ekf_localization_node -->
 
 <launch>
 
@@ -9,7 +7,7 @@
          roll, pitch, yaw, and the respective velocites for those quantities. Accelerations are not used (yet).
          Units for all measurements are assumed to be in meters and radians. By default, the node outputs an
          Odometry message with the topic name odometry/filtered. Use the remap tag to change this. -->
-    <node pkg="robot_localization" type="ukf_localization_node" name="ukf_localization" clear_params="true">
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization" clear_params="true">
 
       <!-- The frequency, in Hz, at which the filter will output a position estimate. Note that
            the filter will not begin computation until it receives at least one message from
@@ -17,16 +15,11 @@
            regardless of whether it receives more measurements. --> 
       <param name="frequency" value="30"/>  
 
-      <!-- The period, in seconds, after which we consider a sensor to have timed out. In this event, we
-           carry out a predict cycle on the UKF without correcting it. This parameter can be thought of
-           as the minimum frequency with which the filter will generate output. -->
+<!-- Rahul:Filter Frequency(minimum) used in prediction step for time(delta) -->
+ 
       <param name="sensor_timeout" value="0.1"/>  
 
-      <!-- If this is set to true, no 3D information will be used in your state estimate. Use this if you
-           are operating in a planar environment and want to ignore the effect of small variations in the
-           ground plane that might otherwise be detected by, for example, an IMU. -->
-
-<!-- Rahul:We're using 2D localisation -->
+<!-- Rahul:The parameter is set to 'true' for 2D mode i.e 2D localization -->
 
       <param name="two_d_mode" value="true"/>
 
@@ -65,19 +58,19 @@
       <!-- Each sensor reading updates some or all of the filter's state. These options give you greater control over
            which values from each measurement are fed to the filter. For example, if you have an odometry message as input,
            but only want to use its Z position value, then set the entire vector to false, except for the third entry.
-           The order of the values is x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az. Note that not some 		   message
+           The order of the values is x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az. Note that not some message
            types lack certain variables. For example, a TwistWithCovarianceStamped message has no pose information, so the first
            six values would be meaningless in that case. -->
 
-<!-- Rahul:Yaw given by <odometry> and <x and y linear velocity> is set as true :<y velocity> is set true in reference to the tutorial-->
+<!--I've set omega for yaw as true as motor encoders will give us the angular velocity -->
 
       <rosparam param="odom0_config">[false, false, false, 
                                       false, false, false, 
-                                      true,  true, false, 
-                                      false, false, true,
+                                      true,  false, false, 
+                                      false, false, true, 
                                       false, false, false]</rosparam>
 
-<!-- Rahul:<pose0_config> and <odom1_config> and <twist0_config> is not touched as it is set as false in earlier parameter -->
+<!-- Rahul: The <odom1_config> and <pose0_config> and <twist0_config> is left as same it is as it is set <false> in earlier param -->
 
       <rosparam param="odom1_config">[false, false, false, 
                                       false, false, false, 
@@ -93,15 +86,15 @@
 
       <rosparam param="twist0_config">[false, false, false, 
                                        false, false, false, 
-                                       true,  true,  true, 
-                                       true,  true,  true,
+                                       false,  false,  true, 
+                                       false,  false,  true,
                                        false, false, false]</rosparam>
 
-<!-- Rahul: Only yaw and omega(along z-axis) is set as true -->
+<!-- Rahul:Only the yaw and yaw(velocity) is set as true -->
 
       <rosparam param="imu0_config">[false, false, false, 
                                      false,  false,  true, 
-                                     false, false, false, 
+                                     false,  false,  false, 
                                      false,  false,  true,
                                      false,  false,  false]</rosparam>
 
@@ -114,7 +107,7 @@
            difference between a given measurement and the previous measurement from that sensor. 
            NOTE: this only applies to sensors that provide absolute measurements, so Twist messages are not supported. -->
 
-<!-- Rahul: I've set <odom0_differntial> and <imu0_differential> values to <true> as we are using the odometry and imu data for localization -->
+<!-- Rahul:odom0_differential and imu0_differential is set as 'true' -->
 
       <param name="odom0_differential" value="true"/>
       <param name="odom1_differential" value="false"/>
@@ -124,14 +117,14 @@
       <!-- If we're including accelerations in our state estimate, then we'll probably want to remove any acceleration that
            is due to gravity for each IMU. If you don't want to, then set this to false. -->
 
-<!-- Rahul: <imu0_remove_gravitational_acceleration> is set to <false> as linear acceleration is not being used --> 
+<!-- Rahul: <imu0_remove_gravitational_acceleration> is set to false as linear accelerations are not used -->
 
       <param name="imu0_remove_gravitational_acceleration" value="false"/>
 
       <!-- Debug settings. Not for the faint of heart. Outputs a ludicrous amount of information to the file
            specified by debug_out_file. I hope you like matrices! -->
       <param name="debug"           value="false"/>
-      <param name="debug_out_file"  value="debug_ukf_localization.txt"/>
+      <param name="debug_out_file"  value="debug_ekf_localization.txt"/>
 
       <!-- The process noise covariance matrix can be difficult to tune, and can vary for each application, so it
            is exposed as a configuration parameter. PLEASE NOTE that every value in this matrix *must* be specified
@@ -152,18 +145,6 @@
                                                   0.0, 0.0, 0.0, 0.0, 0.00, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0,
                                                   0.0, 0.0, 0.0, 0.0, 0.00, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.01, 0.0,
                                                   0.0, 0.0, 0.0, 0.0, 0.00, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.015]</rosparam>
-
-      <!-- UKF-specific parameters. For more information, see the original UKF paper by Eric A. Wan and Rudolph van der Merwe, or
-           check out the Wikipedia page at http://en.wikipedia.org/wiki/Kalman_filter#Unscented_Kalman_filter -->
-
-      <!-- The alpha and kappa variables control the spread of the sigma points. Unless you are familiar with
-           UKFs, it's probably a good idea to leave these alone. -->
-      <param name="alpha" value="0.001"/> 
-      <param name="kappa" value="0"/> 
-
-      <!-- The beta variable relates to the distribution of the state vector. Again, it's probably best to leave
-           this alone if you're uncertain. -->
-      <param name="beta" value="2"/>
 
     </node>
 	 
