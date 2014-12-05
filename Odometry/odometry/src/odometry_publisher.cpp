@@ -37,6 +37,7 @@ int main(int argc, char **argv) {
         ros::spinOnce();
 
         odometry_message = odometry_factory->getOdometryData();
+        odometry_factory.file<<odometry_message.pose.pose.position_x<<"\t"<<odometry_message.pose.pose.position_y<<"\n";
 
         odometry_publisher.publish(odometry_message);
 

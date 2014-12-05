@@ -67,6 +67,7 @@ namespace RobotLocalization
 
   void NavSatTransform::odomCallback(const nav_msgs::OdometryConstPtr& msg)
   {
+	file<<msg->pose.pose.position.x<<"\t"<<msg->pose.pose.position.y<<"\n";
     tf::poseMsgToTF(msg->pose.pose, latestWorldPose_);
     worldFrameId_ = msg->header.frame_id;
     hasOdom_ = true;
@@ -262,6 +263,7 @@ namespace RobotLocalization
     utmTransformStamped.child_frame_id_ = "utm";
 
     ros::Rate rate(frequency);
+
     while(ros::ok())
     {
       ros::spinOnce();
