@@ -44,7 +44,7 @@ namespace odometry_space {
 
         position_x += velocity_x * sin(yaw) * duration.toSec();
         position_y += velocity_x * cos(yaw) * duration.toSec();
-        std::cout<<"position)_y "<<position_y<<" velocity_x "<<velocity_x<<" duration "<<duration.toSec()<<" cos(yaw) "<<cos(yaw)<<std::endl;
+        std::cout<<"position_y "<<position_y<<" velocity_x "<<velocity_x<<" duration "<<duration.toSec()<<" cos(yaw) "<<cos(yaw)<<std::endl;
         yaw += yaw_rate * duration.toSec();
 
         quaternion = tf::createQuaternionMsgFromYaw(yaw);
